@@ -13,7 +13,7 @@ CREATE TABLE petPet (
   gender VARCHAR(1),
   birth DATE,
   death DATE,
-  PRIMARY KEY (petname,eventdate)
+  PRIMARY KEY (petname)
 );
 
 CREATE TABLE petEvent (
@@ -21,7 +21,7 @@ CREATE TABLE petEvent (
   eventdate DATE,
   eventtype VARCHAR(20),
   remark VARCHAR(255),
-  FOREIGN KEY petname REFERENCES petPet,
-  PRIMARY KEY ,
+  FOREIGN KEY (petname) REFERENCES petPet(petname),
+  PRIMARY KEY (petname,eventdate)
 );
 
