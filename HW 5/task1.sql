@@ -1,27 +1,36 @@
-DROP DATABASE IF EXISTS pet_database;
-CREATE DATABASE pet_database;
-USE pet_database;
+--1.
 
-DROP TABLE IF EXISTS petPet, petEvent;
+SELECT bill_total, bill_date 
+FROM restBill
+WHERE cust_name = 'Bob Crow'
 
--- Up to the next CUTOFF POINT should be in task1.sql
+--2.
+  
+SELECT DISTINCT cust_name
+FROM restBill
+WHERE cust_name LIKE "%Smith%"
+ORDER BY cust_name DESC
 
-CREATE TABLE petPet (
-  petname VARCHAR(20) NOT NULL,
-  owner VARCHAR(45),
-  species VARCHAR(45),
-  gender VARCHAR(1),
-  birth DATE,
-  death DATE,
-  PRIMARY KEY (petname,eventdate)
-);
+--3.
 
-CREATE TABLE petEvent (
-  petname VARCHAR(20) NOT NULL,
-  eventdate DATE,
-  eventtype VARCHAR(20),
-  remark VARCHAR(255),
-  FOREIGN KEY petname REFERENCES petPet,
-  PRIMARY KEY ,
-);
+SELECT DISTINCT cust_name
+FROM restBill
+WHERE cust_name LIKE "% %C%"
 
+--4.
+  
+SELECT first_name, surname
+FROM restStaff
+WHERE headwaiter is NULL
+
+--5.
+  
+SELECT *
+FROM restBill
+WHERE bill_date LIKE "%1602%"
+
+--6.
+  
+SELECT bill_date
+FROM restBill
+WHERE bill_date LIKE "15____"
