@@ -1,16 +1,26 @@
-INSERT INTO petEvent (petname, eventdate, eventtype, remark)
- VALUES ("Fluffy", "2020-10-15", "vet", "antibiotics");
+--1.	How much money has the restaurant taken? Change the name of the output column to 'Income'.
 
-INSERT INTO petEvent (petname, eventdate, eventtype, remark)
- VALUES ("Hammy", "2020-10-15", "vet", "antibiotics");
+SELECT SUM(bill_total) AS Income
+FROM restBill;
+--2.	How much money did the restaurant take in February 2016? Change the name of the output column to 'Feb Income'.
+                   
+ SELECT SUM(bill_total) AS 'Feb Income'
+FROM restBill
+WHERE bill_date LIKE "1602__" ;
 
-UPDATE petEvent SET remark="5 kittens, 3 female, 2 male" WHERE petname="Fluffy";
+--3.	Calculate the average bill in table 2.
+                     
+ SELECT AVG(bill_total)
+FROM restBill
+WHERE table_no = 2;
 
-UPDATE petEvent SET petname="Claws" WHERE eventdate="1997-08-03";
+--4.	Calculate the minimal, maximal, and average amount of seats of tables in Blue room. Name the corresponding columns as Min, Max, Avg.
 
-INSERT INTO petEvent (petname, eventdate, eventtype, remark)
- VALUES ("Puffball", "2020-09-01", "death", NULL);
+SELECT MIN(no_of_seats) AS Min, MAX(no_of_seats) AS Max, AVG(no_of_seats) AS Avg
+FROM restRest_table
+WHERE room_name ="Blue";
 
-DELETE FROM petPet WHERE petname="Buffy";
-
-DELETE FROM petEvent WHERE petname="Buffy";
+--5.	Count how many distinct tables are served by waiters 004 and 002.
+SELECT COUNT(DISTINCT table_no)
+FROM restBill
+WHERE waiter_no IN (002, 004);
