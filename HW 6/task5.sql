@@ -1,72 +1,50 @@
-DROP DATABASE IF EXISTS pet_database;
-CREATE DATABASE pet_database;
-USE pet_database;
+-- 1 Which waiters have taken 2 or more bills on a single date? List the waiter names and surnames, the dates and the number of bills they have taken.
 
-DROP TABLE IF EXISTS petPet, petEvent;
+SELECT first_name, surname, bill_date, count(*)
+FROM restStaff
+INNER JOIN restBill
+ON restStaff.staff_no = restBill.waiter_no
+GROUP BY first_name, surname, bill_date
+HAVING count(*) >= 2;
 
--- Up to the next CUTOFF POINT should be in task1.sql
+-- 2 List the rooms with tables that can server more than 6 people and how many of such tables they have.
 
-CREATE TABLE petPet (
-  petname VARCHAR(20) NOT NULL,
-  owner VARCHAR(45),
-  species VARCHAR(45),
-  gender VARCHAR(1),
-  birth DATE,
-  death DATE,
-  PRIMARY KEY (petname)
-);
+SELECT room_name, count(*)
+FROM restRest_table
+WHERE no_of_seats > 6
+GROUP BY room_name;
 
-CREATE TABLE petEvent (
-  petname VARCHAR(20) NOT NULL,
-  eventdate DATE NOT NULL,
-  eventtype VARCHAR(20),
-  remark VARCHAR(255),
-  FOREIGN KEY (petname) REFERENCES petPet(petname),
-  PRIMARY KEY (petname,eventdate)
-);
+-- 3 List the names of the rooms and the total amount of bills in each room.
 
-INSERT INTO petPet VALUES
-    ("Fluffy", "Harold", "cat", "F", "1993-02-04", NULL),
-    ("Claws", "Gwen", "cat", "M", "1994-03-17", NULL),
-    ("Buffy", "Harold", "dog", "F", "1989-05-13", NULL),
-    ("Fang", "Benny", "dog", "M", "1990-08-27", NULL),
-    ("Bowser", "Diane", "dog", "M", "1979-08-31", "1995-07-29"),
-    ("Chirpy", "Gwen", "bird", "F", "1998-09-11", NULL),
-    ("Whistler", "Gwen", "bird", NULL, "1997-12-09", NULL),
-    ("Slim", "Benny", "snake", "M", "1996-04-29", NULL),
-    ('Puffball','Diane','hamster','F','1999-03-30',NULL),
-    ('Hammy','Diane','hamster','M','2010-10-30', NULL);
+SELECT room_name, sum(bill_total)
+FROM restBill
+INNER JOIN restRest_table rt
+ON restBill.table_no = rt.table_no
+GROUP BY rt.room_name;
 
-INSERT INTO petEvent VALUES
-    ("Fluffy", "1995-05-15", "litter", "4 kittens, 3 female, 1 male"),
-    ("Buffy", "1993-06-23", "litter", "5 puppies, 2 female, 3 male"),
-    ("Buffy", "1994-06-19", "litter", "3 puppies, 3 female"),
-    ("Chirpy", "1999-03-21", "vet", "needed beak straightened"),
-    ("Slim", "1997-08-03", "vet", "broken rib"),
-    ("Slim", "1997-10-04", "vet", "broken tooth"),
-    ("Bowser", "1991-10-12", "kennel", NULL),
-    ("Fang", "1991-10-12", "kennel", NULL),
-    ("Fang", "1998-08-28", "birthday", "Gave him a new chew toy"),
-    ("Claws", "1998-03-17","birthday", "Gave him a new flea collar"),
-    ("Whistler", "1998-12-09", "birthday", "First birthday");
+-- 4 List the headwaiter’s name and surname and the total bill amount their waiters have taken. Order the list by total bill amount, largest first.
 
-INSERT INTO petEvent (petname, eventdate, eventtype, remark)
- VALUES ("Fluffy", "2020-10-15", "vet", "antibiotics");
+SELECT s2.first_name, s2.surname, sum(bill_total)
+FROM restBill b
+INNER JOIN restStaff s1
+ON b.waiter_no = s1.staff_no
+INNER JOIN restStaff s2
+ON s1.headwaiter = s2.staff_no
+GROUP BY s2.first_name, s2.surname
+ORDER BY sum(bill_total) desc;
 
-INSERT INTO petEvent (petname, eventdate, eventtype, remark)
- VALUES ("Hammy", "2020-10-15", "vet", "antibiotics");
+-- 5 List any customers who have spent more than £400 on average.
 
-UPDATE petEvent SET remark="5 kittens, 3 female, 2 male" WHERE petname="Fluffy" AND eventtype="litter";
+SELECT cust_name
+FROM restBill
+GROUP BY cust_name
+HAVING avg(bill_total) > 400;
 
-UPDATE petEvent SET petname="Claws" WHERE eventdate="1997-08-03";
+-- 6 Which waiters have taken 3 or more bills on a single date? List the waiter names, surnames, and the number of bills they have taken.
 
-INSERT INTO petEvent (petname, eventdate, eventtype, remark)
- VALUES ("Puffball", "2020-09-01", "death", NULL);
-
-DELETE FROM petEvent WHERE petname="Buffy";
-
-DELETE FROM petPet WHERE petname="Buffy";
-
-SELECT * FROM petPet;
-
-SELECT * FROM petEvent;
+SELECT first_name, surname, count(*)
+FROM restStaff
+INNER JOIN restBill
+ON restStaff.staff_no = restBill.waiter_no
+GROUP BY first_name, surname, bill_date
+HAVING count(*) >= 3;
